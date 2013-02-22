@@ -1,7 +1,7 @@
 /*
  * JBoss, Home of Professional Open Source
  * Copyright 2012, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the 
+ * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -9,7 +9,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -26,7 +26,9 @@ import javax.inject.Named;
 
 import org.jboss.as.quickstarts.kitchensink.model.Member;
 import org.jboss.as.quickstarts.kitchensink.service.MemberRegistration;
+import org.jboss.as.quickstarts.kitchensink.util.KitchensinkLogger;
 import org.jboss.as.quickstarts.kitchensink.util.KitchensinkMessages;
+import org.jboss.logging.cdi.Localized;
 
 // The @Model stereotype is a convenience mechanism to make this a request-scoped bean that has an
 // EL name
@@ -37,9 +39,17 @@ public class MemberController {
 
     @Inject
     private FacesContext facesContext;
-    
+
     @Inject
     private MemberRegistration memberRegistration;
+
+    @Inject
+    @Localized
+    private KitchensinkMessages messages;
+
+    @Inject
+    @Localized
+    private KitchensinkLogger logger;
 
     @Produces
     @Named
@@ -51,23 +61,24 @@ public class MemberController {
     }
 
     public void register() throws Exception {
+        logger.infof("Test injected logger");
         try {
             memberRegistration.register(newMember);
-            FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, KitchensinkMessages.MESSAGES.registeredMessage(),
-                    KitchensinkMessages.MESSAGES.registerSuccessfulMessage());
+            FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_INFO, messages.registeredMessage(),
+                    messages.registerSuccessfulMessage());
             facesContext.addMessage(null, m);
             initNewMember();
         } catch (Exception e) {
             String errorMessage = getRootErrorMessage(e);
             FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage,
-                    KitchensinkMessages.MESSAGES.registerFailMessage());
+                    messages.registerFailMessage());
             facesContext.addMessage(null, m);
         }
     }
 
     private String getRootErrorMessage(Exception e) {
         // Default to general error message that registration failed.
-        String errorMessage = KitchensinkMessages.MESSAGES.defaultErrorMessage();
+        String errorMessage = messages.defaultErrorMessage();
         if (e == null) {
             // This shouldn't happen, but return the default messages
             return errorMessage;

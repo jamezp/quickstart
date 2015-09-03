@@ -27,12 +27,13 @@
     <!-- Force the use of the Servlet 3.0 protocol with all containers, as it is the most mature -->
     <defaultProtocol type="Servlet 3.0"/>
 
-     <!-- Example configuration for a remote JBoss EAP instance -->
-    <container qualifier="jboss" default="true">
+    <!-- Example configuration for a remote JBoss EAP instance -->
+    <container qualifier="jboss" default="true" mode="manual">
         <!-- By default, arquillian will use the JBOSS_HOME environment variable.  Alternatively, the configuration below can be uncommented. -->
-        <!--<configuration> -->
-        <!--<property name="jbossHome">/path/to/jboss/as</property> -->
-        <!--</configuration> -->
+        <configuration>
+            <property name="jbossHome">/home/jperkins/servers/wildfly-10.0.0.Beta2</property>
+            <!--<property name="javaVmArguments">-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=y -enableassertions</property> -->
+        </configuration>
     </container>
 
 
